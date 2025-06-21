@@ -13,7 +13,7 @@
 
 .progress {
   height: 100%;
-  width: 50%; /* placeholder progress */
+  width: 0%; /* initial progress */
   background-color: #1890ff;
 }
 

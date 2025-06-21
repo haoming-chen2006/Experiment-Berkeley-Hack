@@ -18,18 +18,18 @@ export default function App() {
     anim3,
     anim4,
     anim5,
-    anim6,
-    anim7,
-    anim8,
   ];
 
   const [isAnimating, setAnimating] = useState(false);
   const [currentVideo, setCurrentVideo] = useState(null);
   const [sidebarWidth, setSidebarWidth] = useState(10); // percentage
+  const [progress, setProgress] = useState(0);
+  const videoIndex = useRef(0);
 
-  const playRandomAnimation = () => {
-    const random = videos[Math.floor(Math.random() * videos.length)];
-    setCurrentVideo(random);
+  const playNextAnimation = () => {
+    const next = videos[videoIndex.current % videos.length];
+    videoIndex.current = (videoIndex.current + 1) % videos.length;
+    setCurrentVideo(next);
     setAnimating(true);
   };
 
@@ -37,7 +37,11 @@ export default function App() {
     if (isAnimating) {
       setAnimating(false);
     } else {
-      playRandomAnimation();
+      playNextAnimation();
+      setProgress((p) => {
+        const next = p + 10;
+        return next > 100 ? 0 : next;
+      });
     }
   };
 
@@ -47,7 +51,7 @@ export default function App() {
 
   useEffect(() => {
     const id = setInterval(() => {
-      playRandomAnimation();
+      playNextAnimation();
     }, 60000);
     return () => clearInterval(id);
   }, []);
@@ -59,7 +63,7 @@ export default function App() {
   return (
     <div className="layout">
       <div className="progress-bar">
-        <div className="progress" />
+        <div className="progress" style={{ width: `${progress}%` }} />
       </div>
       <div className="content">
         <div className="main">
