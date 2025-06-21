@@ -18,12 +18,22 @@ export default function App() {
   };
 
   return (
-    <div className="container" onClick={handleClick}>
-      {isAnimating ? (
-        <video src={clickAnimation} autoPlay onEnded={handleEnded} />
-      ) : (
-        <video src={defaultVideo} autoPlay loop />
-      )}
+    <div className="layout">
+      <div className="progress-bar">
+        <div className="progress" />
+      </div>
+      <div className="content">
+        <div className="sidebar">Sidebar</div>
+        <div className="main">
+          <div className="avatar-container" onClick={handleClick}>
+            {isAnimating ? (
+              <video src={clickAnimation} autoPlay onEnded={handleEnded} />
+            ) : (
+              <video src={defaultVideo} autoPlay loop />
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
