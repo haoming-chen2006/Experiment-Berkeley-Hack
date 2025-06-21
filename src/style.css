@@ -1,13 +1,45 @@
-.container {
-  width: 100%;
+/* Overall page layout */
+.layout {
+  display: flex;
+  flex-direction: column;
   height: 100%;
+}
+
+/* Top progress bar */
+.progress-bar {
+  height: 8px;
+  background-color: #eee;
+}
+
+.progress {
+  height: 100%;
+  width: 50%; /* placeholder progress */
+  background-color: #1890ff;
+}
+
+/* Content area containing sidebar and main section */
+.content {
+  flex: 1;
+  display: flex;
+}
+
+/* Sidebar styling */
+.sidebar {
+  width: 200px;
+  background-color: #f5f5f5;
+  padding: 1rem;
+}
+
+/* Main area where the avatar sits */
+.main {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #e6f7ff;
 }
 
-video {
+.avatar-container video {
   max-width: 300px;
   border-radius: 8px;
 }
