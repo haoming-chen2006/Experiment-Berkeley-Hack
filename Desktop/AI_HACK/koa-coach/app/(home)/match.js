@@ -27,6 +27,14 @@ const MatchScreen = () => {
     setShowRosyCard(true);
   };
 
+  const triggerAgent = async () => {
+    try {
+      await fetch('http://localhost:3001/run-agent', { method: 'POST' });
+    } catch (e) {
+      console.error('Failed to start agent', e);
+    }
+  };
+
   const handleSend = () => {
     if (inputText.trim()) {
       const userMsg = { role: "user", content: inputText.trim() };
@@ -56,6 +64,10 @@ const MatchScreen = () => {
       </View>
       <TouchableOpacity style={styles.matchButton} onPress={handleMatch}>
         <Text style={styles.matchButtonText}>Match Me</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.agentButton} onPress={triggerAgent}>
+        <Text style={styles.agentButtonText}>Run Agent Demo</Text>
       </TouchableOpacity>
 
       {showRosyCard && (
@@ -231,6 +243,18 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: "center",
     alignItems: "center",
+  },
+  agentButton: {
+    backgroundColor: "#FF5722",
+    borderRadius: 10,
+    padding: 20,
+    marginVertical: 16,
+    alignItems: "center",
+  },
+  agentButtonText: {
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "bold",
   },
   noticeBox: {
     backgroundColor: "#FFF3CD",
