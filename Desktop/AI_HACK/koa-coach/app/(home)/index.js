@@ -55,7 +55,7 @@ export default function HomePage() {
       <View style={styles.topBar}>
         <Text style={styles.topBarText}>position for top bar</Text>
       </View>
-      <View style={styles.avatarWrapper}>
+      <View style={[styles.avatarWrapper, { width: avatarSize, height: avatarSize }]}>
         <TouchableOpacity onPress={handleClick}>
           {isAnimating && currentVideo ? (
             <Video
@@ -95,8 +95,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginVertical: 20,
-    width: "100%",
-    height: "100%",
     backgroundColor: "#000",
     overflow: "hidden",
   },
