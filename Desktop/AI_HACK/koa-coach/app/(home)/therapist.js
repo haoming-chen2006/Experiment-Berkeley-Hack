@@ -19,7 +19,10 @@ import Anthropic from "@anthropic-ai/sdk";
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { loadAnimations } from "../actions/animations";
+import {
+  loadAnimeAnimations,
+  loadActionAnimations,
+} from "../actions/animations";
 import avatarImage from "../anime/koa.png";
 
 const flagIcons = {
@@ -87,14 +90,12 @@ const TherapistChat = () => {
 
   
 
-  const ensureAnimations = () => {
-    if (!animationsRef.current) {
-      animationsRef.current = loadAnimations();
-    }
+  const loadAnimationsByType = (type) => {
+    animationsRef.current =
+      type === "action" ? loadActionAnimations() : loadAnimeAnimations();
   };
 
   const playNextAnimation = () => {
-    ensureAnimations();
     const animList = animationsRef.current;
     const next = animList[videoIndex.current % animList.length];
     videoIndex.current = (videoIndex.current + 1) % animList.length;
@@ -108,6 +109,9 @@ const TherapistChat = () => {
       setLooping(false);
       setCurrentVideo(null);
     } else {
+      setLooping(false);
+      videoIndex.current = 0;
+      loadAnimationsByType("action");
       playNextAnimation();
     }
   };
@@ -123,6 +127,8 @@ const TherapistChat = () => {
 
   const handleLoopAll = () => {
     setLooping(true);
+    videoIndex.current = 0;
+    loadAnimationsByType("anime");
     playNextAnimation();
   };
 
