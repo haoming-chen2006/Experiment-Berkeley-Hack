@@ -25,7 +25,7 @@ export default function App() {
         <View style={styles.content}>
           <Image
             style={styles.logo}
-            source={require("../assets/images/main-logo.png")}
+            source={require("../../assets/images/main-logo.png")}
             resizeMode="contain"
           />
         </View>
