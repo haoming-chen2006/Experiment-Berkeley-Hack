@@ -14,7 +14,7 @@ from specialized_agents.constants import (
 from specialized_agents.research_agent import build_research_agent
 
 PLANNER_PROMPT = """
-# Manager - System Prompt
+# Planning Agent Instructions
 
 **Core Mission:**
 As manager, your job is to ensure that all specialist agents are contributing to the core task given by the user. Your ONLY job is to plan and create tasks to give to the appropriate tools and reflect on progress as the tools complete work. Use the information from the tools to complete the task or delegate additional work.
@@ -42,10 +42,18 @@ Use the research tool when you need to use general search queries to find inform
 """
 
 TASK_PROMPT = f"""
-1. Summarize the job description of the job/internship position on this job page: {JOB_PAGE_URL}, use the browser tool if needed.
-2. Navigate to https://www.gmail.com
-3. Draft a cover letter style email for the summarized job description utilizing specific resume information, making sure to include previous job experience, skills, and qualifications. The recipient of the email is "kevin@unifygtm.com". Do not send the emails, but leave them in the draft folder. Do not ask additional questions. Do not discard the draft.
+1. Visit this cozy little  page: {JOB_PAGE_URL} and gather a warm, simple summary of the page. You can use your browser tool if needed — click around carefully like a curious koala!
+
+2. Next, tiptoe over to https://www.gmail.com — that’s where your friendly messages go.
+
+3. Using the resume info snuggled in your fluffy memory, write a sweet, thoughtful letter to your friend Kevin (kevin@unifygtm.com). Tell him about your adventures— all the stuff you’re proud of Example: Kola just watched cool animal movies! 
+
+🐾 Important:
+- Don't send the email — just leave it safe in the draft folder.
+- Don't ask more questions.
+- And never throw the draft away! Every letter is a treasure. ✉️💖
 """
+
 
 
 async def read_resume() -> str:
