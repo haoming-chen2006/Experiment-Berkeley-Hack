@@ -3,11 +3,12 @@ import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { Video } from "expo-av";
 import { useRouter } from "expo-router";
 import { supabase } from "../lib/supabase";
-import anim1 from "./animations/anime1.mp4";
+import { loadAnimations } from "./actions/animations";
 
 export default function SplashScreen() {
   const router = useRouter();
   const [redirecting, setRedirecting] = useState(false);
+  const [anim1] = loadAnimations();
 
   useEffect(() => {
     const timer = setTimeout(handleEnd, 5000);

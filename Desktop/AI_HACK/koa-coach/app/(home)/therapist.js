@@ -19,13 +19,8 @@ import Anthropic from "@anthropic-ai/sdk";
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import anim1 from "../animations/anime1.mp4";
-import anim2 from "../animations/anime2.mp4";
-import anim3 from "../animations/anime3.mp4";
-import anim4 from "../animations/anime4.mp4";
-import anim5 from "../animations/anime5.mp4";
-import anim6 from "../animations/anime6.mp4";
-import avatarImage from "../animations/koa.png";
+import { loadAnimations } from "../actions/animations";
+import avatarImage from "../anime/koa.png";
 
 const flagIcons = {
   en: require("../../assets/flags/uk.png"),
@@ -62,6 +57,8 @@ const TherapistChat = () => {
   const [currentVideo, setCurrentVideo] = useState(null);
   const videoIndex = useRef(0);
   const videoRef = useRef(null);
+  const animationsRef = useRef(null);
+  const [looping, setLooping] = useState(false);
 
   const pulseAnim = useState(new Animated.Value(1))[0];
 
@@ -88,11 +85,17 @@ const TherapistChat = () => {
     }
   }, [isRecording]);
 
-  const animations = [anim1, anim2, anim3, anim4, anim5, anim6];
+  const ensureAnimations = () => {
+    if (!animationsRef.current) {
+      animationsRef.current = loadAnimations();
+    }
+  };
 
   const playNextAnimation = () => {
-    const next = animations[videoIndex.current % animations.length];
-    videoIndex.current = (videoIndex.current + 1) % animations.length;
+    ensureAnimations();
+    const animList = animationsRef.current;
+    const next = animList[videoIndex.current % animList.length];
+    videoIndex.current = (videoIndex.current + 1) % animList.length;
     setCurrentVideo(next);
     setAnimating(true);
   };
@@ -100,6 +103,7 @@ const TherapistChat = () => {
   const handleClick = () => {
     if (isAnimating) {
       setAnimating(false);
+      setLooping(false);
       setCurrentVideo(null);
     } else {
       playNextAnimation();
@@ -107,8 +111,17 @@ const TherapistChat = () => {
   };
 
   const handleVideoEnd = () => {
-    setAnimating(false);
-    setCurrentVideo(null);
+    if (looping) {
+      playNextAnimation();
+    } else {
+      setAnimating(false);
+      setCurrentVideo(null);
+    }
+  };
+
+  const handleLoopAll = () => {
+    setLooping(true);
+    playNextAnimation();
   };
 
   const anthropic = new Anthropic({
@@ -411,6 +424,10 @@ const TherapistChat = () => {
         </TouchableOpacity>
       </View>
 
+      <TouchableOpacity style={styles.loopButton} onPress={handleLoopAll}>
+        <Text style={styles.loopButtonText}>Loop Anime</Text>
+      </TouchableOpacity>
+
       <FlatList
         data={messages}
         renderItem={renderMessage}
@@ -503,6 +520,18 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
+  },
+  loopButton: {
+    alignSelf: "center",
+    backgroundColor: "#196315",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    marginBottom: 10,
+  },
+  loopButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
   avatarWrapper: {
     alignSelf: "center",
