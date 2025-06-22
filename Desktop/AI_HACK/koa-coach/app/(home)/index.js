@@ -7,7 +7,7 @@ import {
   useWindowDimensions,
   Text,
 } from "react-native";
-import { Video } from "expo-av";
+import Video from "react-native-video";
 
 import anim1 from "../animations/anime1.mp4";
 import anim2 from "../animations/anime2.mp4";
@@ -23,8 +23,8 @@ export default function HomePage() {
 
   const [isAnimating, setAnimating] = useState(false);
   const [currentVideo, setCurrentVideo] = useState(null);
-  const videoRef = useRef(null);
   const videoIndex = useRef(0);
+  const videoRef = useRef(null);
 
   const animations = [anim1, anim2, anim3, anim4, anim5, anim6];
 
@@ -35,9 +35,8 @@ export default function HomePage() {
     setAnimating(true);
   };
 
-  const handleClick = async () => {
+  const handleClick = () => {
     if (isAnimating) {
-      await videoRef.current?.stopAsync();
       setAnimating(false);
       setCurrentVideo(null);
     } else {
@@ -55,7 +54,7 @@ export default function HomePage() {
       <View style={styles.topBar}>
         <Text style={styles.topBarText}>position for top bar</Text>
       </View>
-      <View style={styles.avatarWrapper}>
+      <View style={[styles.avatarWrapper, { width: avatarSize, height: avatarSize }]}>
         <TouchableOpacity onPress={handleClick}>
           {isAnimating && currentVideo ? (
             <Video
@@ -63,12 +62,10 @@ export default function HomePage() {
               ref={videoRef}
               source={currentVideo}
               resizeMode="contain"
-              shouldPlay
-              onPlaybackStatusUpdate={(status) => {
-                if (status.didJustFinish) handleVideoEnd();
-              }}
+              repeat={false}
+              paused={false}
+              onEnd={handleVideoEnd}
               style={[styles.avatar, { width: avatarSize, height: avatarSize }]}
-              isLooping={false}
             />
           ) : (
             <Image
@@ -95,8 +92,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginVertical: 20,
-    width: "100%",
-    height: "100%",
     backgroundColor: "#000",
     overflow: "hidden",
   },
@@ -104,3 +99,4 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
   },
 });
+

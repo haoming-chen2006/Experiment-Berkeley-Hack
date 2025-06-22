@@ -6940,6 +6940,11 @@ react-native-url-polyfill@^2.0.0, react-native-url-polyfill@2.0.0:
   dependencies:
     whatwg-url-without-unicode "8.0.0-3"
 
+react-native-video@^6.15.0:
+  version "6.15.0"
+  resolved "https://registry.npmjs.org/react-native-video/-/react-native-video-6.15.0.tgz"
+  integrity sha512-zgaNCMA50uS5hvgySmX1GhB0gJUke1iYhBGcXtIYhvYVtUb9Wp7enrazABb3D5xZOer5kpRraS9V79UpedxBGg==
+
 react-native-web@*, react-native-web@^0.19.13:
   version "0.19.13"
   resolved "https://registry.npmjs.org/react-native-web/-/react-native-web-0.19.13.tgz"
