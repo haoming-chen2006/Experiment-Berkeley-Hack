@@ -1,5 +1,11 @@
 import React, { useState, useRef } from "react";
-import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  useWindowDimensions,
+} from "react-native";
 import { Video } from "expo-av";
 
 import anim1 from "../animations/anime1.mp4";
@@ -8,6 +14,9 @@ import anim3 from "../animations/anime3.mp4";
 import avatarImage from "../animations/koa.png";
 
 export default function HomePage() {
+  const { width, height } = useWindowDimensions();
+  const avatarSize = Math.min(width, height) * 0.8;
+
   const [isAnimating, setAnimating] = useState(false);
   const [currentVideo, setCurrentVideo] = useState(null);
   const videoRef = useRef(null);
@@ -39,6 +48,7 @@ export default function HomePage() {
         <TouchableOpacity onPress={handleClick}>
           {isAnimating && currentVideo ? (
             <Video
+              key={currentVideo}
               ref={videoRef}
               source={currentVideo}
               resizeMode="contain"
@@ -46,11 +56,15 @@ export default function HomePage() {
               onPlaybackStatusUpdate={(status) => {
                 if (status.didJustFinish) handleVideoEnd();
               }}
-              style={styles.avatar}
+              style={[styles.avatar, { width: avatarSize, height: avatarSize }]}
               isLooping={false}
             />
           ) : (
-            <Image source={avatarImage} style={styles.avatar} />
+            <Image
+              source={avatarImage}
+              style={[styles.avatar, { width: avatarSize, height: avatarSize }]}
+              resizeMode="contain"
+            />
           )}
         </TouchableOpacity>
       </View>
@@ -70,8 +84,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   avatar: {
-    width: "100%",
-    height: "100%",
     backgroundColor: "#000",
   },
 });
