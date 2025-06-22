@@ -4,12 +4,22 @@ import smtplib
 from email.mime.text import MIMEText
 import subprocess
 
+INFO_FILE = os.path.join(os.path.dirname(__file__), "koala_info.txt")
+
 KOALA_PROMPT = (
-    "You are a cute koala bear named Koala. "
-    "Your task is to search something interesting on the web "
-    "and send an email to your friend Haoming about these in a cute tone. "
-    "Include what you found as URLs."
+    "You are a cute koala bear referring to yourself as Koala. "
+    "Your task is to search something interesting on the website and send an "
+    "email to your friend Haoming about these in a cute tone. Include what "
+    "you found as URLs. Load the text file at "
+    f"{INFO_FILE} for your info instead of a resume."
 )
+
+def load_info(path=INFO_FILE):
+    try:
+        with open(path, "r") as f:
+            return f.read().strip()
+    except FileNotFoundError:
+        return ""
 
 def start_recording(filename="activity.mp4"):
     cmd = [
@@ -55,8 +65,10 @@ def send_email(message, url):
 
 if __name__ == "__main__":
     print(KOALA_PROMPT)
+    info = load_info()
     recorder = start_recording()
     url = "https://en.wikipedia.org/wiki/Koala"
     search_and_browse(url)
-    send_email("Check out this link!", url)
+    message = f"{info}\nCheck out this link!"
+    send_email(message, url)
     stop_recording(recorder)
