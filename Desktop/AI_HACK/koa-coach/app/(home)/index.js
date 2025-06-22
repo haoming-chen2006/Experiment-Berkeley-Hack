@@ -1,5 +1,7 @@
+import React from "react";
 import { useRouter } from "expo-router";
 import { supabase } from "../../lib/supabase";
+import { updateStreak } from "../../lib/streak";
 import {
   View,
   StyleSheet,
@@ -12,6 +14,15 @@ import { MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 
 export default function HomePage() {
   const router = useRouter();
+  const [streak, setStreak] = React.useState(0);
+
+  React.useEffect(() => {
+    const load = async () => {
+      const value = await updateStreak();
+      setStreak(value);
+    };
+    load();
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -30,6 +41,9 @@ export default function HomePage() {
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <MaterialIcons name="logout" size={24} color="#196315" />
         </TouchableOpacity>
+        <View style={styles.streakBar}>
+          <Text style={styles.streakText}>{streak}</Text>
+        </View>
       </View>
 
       <View style={styles.cardContainer}>
@@ -92,6 +106,19 @@ const styles = StyleSheet.create({
     top: 60,
     right: 20,
     padding: 10,
+  },
+  streakBar: {
+    position: "absolute",
+    top: 60,
+    right: 80,
+    backgroundColor: "#FFD700",
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 10,
+  },
+  streakText: {
+    fontWeight: "bold",
+    color: "#000",
   },
   cardContainer: {
     padding: 20,
