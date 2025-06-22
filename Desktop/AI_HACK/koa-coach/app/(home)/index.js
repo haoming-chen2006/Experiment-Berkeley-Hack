@@ -5,24 +5,28 @@ import {
   TouchableOpacity,
   Image,
   useWindowDimensions,
+  Text,
 } from "react-native";
 import { Video } from "expo-av";
 
 import anim1 from "../animations/anime1.mp4";
 import anim2 from "../animations/anime2.mp4";
 import anim3 from "../animations/anime3.mp4";
+import anim4 from "../animations/anime4.mp4";
+import anim5 from "../animations/anime5.mp4";
+import anim6 from "../animations/anime6.mp4";
 import avatarImage from "../animations/koa.png";
 
 export default function HomePage() {
   const { width, height } = useWindowDimensions();
-  const avatarSize = Math.min(width, height) * 0.8;
+  const avatarSize = Math.min(width, height) * 0.7;
 
   const [isAnimating, setAnimating] = useState(false);
   const [currentVideo, setCurrentVideo] = useState(null);
   const videoRef = useRef(null);
   const videoIndex = useRef(0);
 
-  const animations = [anim1, anim2, anim3];
+  const animations = [anim1, anim2, anim3, anim4, anim5, anim6];
 
   const playNextAnimation = () => {
     const next = animations[videoIndex.current % animations.length];
@@ -31,8 +35,12 @@ export default function HomePage() {
     setAnimating(true);
   };
 
-  const handleClick = () => {
-    if (!isAnimating) {
+  const handleClick = async () => {
+    if (isAnimating) {
+      await videoRef.current?.stopAsync();
+      setAnimating(false);
+      setCurrentVideo(null);
+    } else {
       playNextAnimation();
     }
   };
@@ -44,6 +52,9 @@ export default function HomePage() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.topBar}>
+        <Text style={styles.topBarText}>position for top bar</Text>
+      </View>
       <View style={styles.avatarWrapper}>
         <TouchableOpacity onPress={handleClick}>
           {isAnimating && currentVideo ? (
@@ -74,6 +85,12 @@ export default function HomePage() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#000", justifyContent: "center" },
+  topBar: {
+    width: "100%",
+    paddingVertical: 10,
+    alignItems: "center",
+  },
+  topBarText: { color: "#fff" },
   avatarWrapper: {
     alignItems: "center",
     justifyContent: "center",
