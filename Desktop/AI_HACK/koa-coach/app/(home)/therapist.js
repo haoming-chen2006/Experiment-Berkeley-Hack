@@ -85,6 +85,8 @@ const TherapistChat = () => {
     }
   }, [isRecording]);
 
+  
+
   const ensureAnimations = () => {
     if (!animationsRef.current) {
       animationsRef.current = loadAnimations();
@@ -126,6 +128,7 @@ const TherapistChat = () => {
 
   const anthropic = new Anthropic({
     apiKey: process.env.EXPO_PUBLIC_ANTHROPIC_API_KEY,
+    dangerouslyAllowBrowser: true,
   });
 
   const checkForConcerningContent = (message) => {
@@ -207,6 +210,56 @@ const TherapistChat = () => {
     };
     loadUserPreferences();
   }, []);
+
+  useEffect(() => {
+    const logVideoSize = async () => {
+      if (videoRef.current) {
+        try {
+          const status = await videoRef.current.getStatusAsync();
+          if (status.isLoaded) {
+            console.log("🎞️ Video natural size:", status.naturalWidth, status.naturalHeight);
+          }
+        } catch (err) {
+          console.error("Error getting video size:", err);
+        }
+      }
+    };
+  
+    if (currentVideo) {
+      const timeoutId = setTimeout(logVideoSize, 500);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [currentVideo]);
+  
+  // Inside your JSX return block:
+  <View style={[styles.avatarWrapper, { width: avatarSize, aspectRatio: 1 }]}>  
+    <TouchableOpacity onPress={handleClick}>
+      {isAnimating && currentVideo ? (
+        <Video
+          key={currentVideo}
+          ref={videoRef}
+          source={currentVideo}
+          resizeMode="contain"
+          isLooping={false}
+          shouldPlay
+          onPlaybackStatusUpdate={(status) => {
+            if (status.didJustFinish) handleVideoEnd();
+          }}
+          style={[styles.avatar, { width: avatarSize, aspectRatio: 1 }]}
+        />
+      ) : (
+        <Image
+          source={avatarImage}
+          style={[styles.avatar, { width: avatarSize + 75, aspectRatio: 1 }]}
+          resizeMode="contain"
+          onLayout={(event) => {
+            const { width, height } = event.nativeEvent.layout;
+            console.log("📸 Image rendered size:", width, height);
+          }}
+        />
+      )}
+    </TouchableOpacity>
+  </View>
 
   const sendMessage = async (overrideText = null) => {
     const text = overrideText || inputText;
@@ -397,7 +450,7 @@ const TherapistChat = () => {
         ))}
       </View>
 
-      <View style={[styles.avatarWrapper, { width: avatarSize, height: avatarSize }]}>
+      <View style={[styles.avatarWrapper, { width: avatarSize, aspectRatio: 1 }]}>
         <TouchableOpacity onPress={handleClick}>
           {isAnimating && currentVideo ? (
             <Video
@@ -412,13 +465,25 @@ const TherapistChat = () => {
                   handleVideoEnd();
                 }
               }}
-              style={[styles.avatar, { width: avatarSize, height: avatarSize }]}
+              style={[styles.avatar, { width: avatarSize, aspectRatio: 1 }]}
+              onPlaybackStatusUpdate={(status) => {
+                if (status.didJustFinish) {
+                  handleVideoEnd();
+                }
+                if (status.isLoaded) {
+                  console.log("🎞️ Video status size:", status.naturalWidth, status.naturalHeight);
+                }
+              }}
             />
           ) : (
             <Image
               source={avatarImage}
               style={[styles.avatar, { width: avatarSize, height: avatarSize }]}
               resizeMode="contain"
+              onLayout={(event) => {
+                const { width, height } = event.nativeEvent.layout;
+                console.log("📸 Image size:", width, height);
+              }}
             />
           )}
         </TouchableOpacity>
@@ -539,7 +604,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginVertical: 20,
     backgroundColor: "#000",
-    overflow: "hidden",
   },
   avatar: {
     backgroundColor: "#000",
