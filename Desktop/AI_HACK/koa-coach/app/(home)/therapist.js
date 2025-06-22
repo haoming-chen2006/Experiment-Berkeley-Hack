@@ -13,7 +13,7 @@ import {
   Easing,
   useWindowDimensions,
 } from "react-native";
-import Video from "react-native-video";
+import { Video } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Anthropic from "@anthropic-ai/sdk";
 import { Audio } from "expo-av";
@@ -392,9 +392,13 @@ const TherapistChat = () => {
               ref={videoRef}
               source={currentVideo}
               resizeMode="contain"
-              repeat={false}
-              paused={false}
-              onEnd={handleVideoEnd}
+              isLooping={false}
+              shouldPlay
+              onPlaybackStatusUpdate={(status) => {
+                if (status.didJustFinish) {
+                  handleVideoEnd();
+                }
+              }}
               style={[styles.avatar, { width: avatarSize, height: avatarSize }]}
             />
           ) : (
@@ -452,7 +456,7 @@ const TherapistChat = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
+  container: { flex: 1, backgroundColor: "#000" },
   messageList: { flex: 1, padding: 16, marginTop: 10 },
   userMessage: {
     backgroundColor: "#07db78",
@@ -501,6 +505,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   avatarWrapper: {
+    alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",
     marginVertical: 20,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
-import Video from "react-native-video";
+import { Video } from "expo-av";
 import anim1 from "../animations/anime1.mp4";
 import OriginalHome from "./original";
 
@@ -25,8 +25,8 @@ export default function HomeIndex() {
       <Video
         source={anim1}
         resizeMode="contain"
-        repeat={false}
-        paused={false}
+        isLooping={false}
+        shouldPlay
         style={styles.video}
       />
       <Text style={styles.skipText}>Tap to skip</Text>
