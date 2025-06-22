@@ -24,6 +24,8 @@ import {
   loadActionAnimations,
 } from "../actions/animations";
 import avatarImage from "../anime/koa.png";
+import default1 from "../default/default1.mp4";
+import default2 from "../default/default2.mp4";
 
 const flagIcons = {
   en: require("../../assets/flags/uk.png"),
@@ -62,6 +64,8 @@ const TherapistChat = () => {
   const videoRef = useRef(null);
   const animationsRef = useRef(null);
   const [looping, setLooping] = useState(false);
+  const defaultVideos = [default1, default2];
+  const [defaultVideoIndex, setDefaultVideoIndex] = useState(0);
 
   const pulseAnim = useState(new Animated.Value(1))[0];
 
@@ -123,6 +127,10 @@ const TherapistChat = () => {
       setAnimating(false);
       setCurrentVideo(null);
     }
+  };
+
+  const handleDefaultVideoEnd = () => {
+    setDefaultVideoIndex((prev) => (prev + 1) % defaultVideos.length);
   };
 
   const handleLoopAll = () => {
@@ -254,14 +262,16 @@ const TherapistChat = () => {
           style={[styles.avatar, { width: avatarSize, aspectRatio: 1 }]}
         />
       ) : (
-        <Image
-          source={avatarImage}
-          style={[styles.avatar, { width: avatarSize + 75, aspectRatio: 1 }]}
+        <Video
+          key={`default-${defaultVideoIndex}`}
+          source={defaultVideos[defaultVideoIndex]}
           resizeMode="contain"
-          onLayout={(event) => {
-            const { width, height } = event.nativeEvent.layout;
-            console.log("📸 Image rendered size:", width, height);
+          isLooping={false}
+          shouldPlay
+          onPlaybackStatusUpdate={(status) => {
+            if (status.didJustFinish) handleDefaultVideoEnd();
           }}
+          style={[styles.avatar, { width: avatarSize, aspectRatio: 1 }]}
         />
       )}
     </TouchableOpacity>
@@ -482,14 +492,25 @@ const TherapistChat = () => {
               }}
             />
           ) : (
-            <Image
-              source={avatarImage}
-              style={[styles.avatar, { width: avatarSize, height: avatarSize }]}
+            <Video
+              key={`default-${defaultVideoIndex}`}
+              source={defaultVideos[defaultVideoIndex]}
               resizeMode="contain"
-              onLayout={(event) => {
-                const { width, height } = event.nativeEvent.layout;
-                console.log("📸 Image size:", width, height);
+              isLooping={false}
+              shouldPlay
+              onPlaybackStatusUpdate={(status) => {
+                if (status.didJustFinish) {
+                  handleDefaultVideoEnd();
+                }
+                if (status.isLoaded) {
+                  console.log(
+                    "🎞️ Video status size:",
+                    status.naturalWidth,
+                    status.naturalHeight
+                  );
+                }
               }}
+              style={[styles.avatar, { width: avatarSize, aspectRatio: 1 }]}
             />
           )}
         </TouchableOpacity>
